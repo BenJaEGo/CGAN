@@ -17,8 +17,8 @@ class ConditionalGenerativeAdversarialNetwork(object):
         self._z_pl = tf.placeholder(tf.float32, shape=[None, n_latent], name='z_pl')
         self._y_pl = tf.placeholder(tf.float32, shape=[None, n_label], name='y_pl')
 
-        self._generator = Generator(n_latent, n_generator_units, n_input, n_label, tf.nn.relu, tf.nn.sigmoid)
-        self._discriminator = Discriminator(n_input, n_discriminator_units, 1, n_label, tf.nn.relu, tf.nn.sigmoid)
+        self._generator = Generator(n_latent, n_generator_units, n_input, n_label, tf.nn.tanh, tf.nn.sigmoid)
+        self._discriminator = Discriminator(n_input, n_discriminator_units, 1, n_label, tf.nn.tanh, tf.nn.sigmoid)
 
         self._generated_sample = self._generator.forward(self._z_pl, self._y_pl)
         fake_probability = self._discriminator.forward(self._generated_sample, self._y_pl)

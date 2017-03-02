@@ -19,7 +19,7 @@ class Generator(object):
             if layer_idx is 0:
                 n_layer_input = n_input + n_label
             else:
-                n_layer_input = n_units[layer_idx]
+                n_layer_input = n_units[layer_idx - 1]
             n_unit = n_units[layer_idx]
             self._hidden_layers.append(
                 AffinePlusNonlinearLayer(layer_name, n_layer_input, n_unit, hidden_activation))
@@ -39,7 +39,7 @@ class Generator(object):
         self._parameters.append(self._output_layer.biases)
 
     def forward(self, input_tensor_latent, input_tensor_label):
-        input_tensor = tf.concat(concat_dim=1, values=[input_tensor_latent, input_tensor_label])
+        input_tensor = tf.concat(values=[input_tensor_latent, input_tensor_label], axis=1)
         output_tensor = input_tensor
         for layer_idx in range(self._n_layer):
             output_tensor = self._hidden_layers[layer_idx].forward(output_tensor)

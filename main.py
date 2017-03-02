@@ -6,18 +6,23 @@ import os
 
 
 def run_training():
-    if not os.path.exists('out/'):
-        os.makedirs('out/')
+    save_path = 'out'
+    if os.path.exists(save_path):
+        pass
+    else:
+        os.mkdir(save_path)
 
     mnist = input_data.read_data_sets("MNIST_data/", one_hot=True)
 
     n_input = 784
     n_label = 10
-    n_generator_units = [128]
-    n_discriminator_units = [128]
+    n_generator_units = [200]
+    n_discriminator_units = [200]
     n_latent = 100
-    lam = 0.0
+    lam = 0.0001
     lr = 0.001
+
+    desired_label = 5
 
     max_epoch = 4000
     batch_size = 100
@@ -62,8 +67,7 @@ def run_training():
                       (epoch, aver_dis_loss / n_batch_each_epoch, aver_gen_loss / n_batch_each_epoch))
 
                 y = np.zeros(shape=[16, n_label])
-                desire_label = 5
-                y[:, desire_label] = 1
+                y[:, desired_label] = 1
 
                 samples = sess.run(fetches=[model.generated_sample],
                                    feed_dict={
@@ -71,7 +75,8 @@ def run_training():
                                        model.z_pl: sample_latent_variables_uniform(16, n_latent)})
                 # print(samples[0].shape)
                 fig = visualize_generate_samples(samples[0])
-                plt.savefig('out/{}.png'.format(str(epoch).zfill(4)), bbox_inches='tight')
+                plt.savefig('{path}/epoch_{epoch}.png'.format(
+                    path=save_path, epoch=epoch), bbox_inches='tight')
                 plt.close(fig)
 
 
